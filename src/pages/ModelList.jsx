@@ -1,8 +1,9 @@
 import {useEffect, useState} from 'react';
-import {modelService} from '../services/api';
+import {modelService, brandService} from '../services/api';
 
 function ModelList() {
     const [models, setModels] = useState([]);
+    const [brands, setBrands] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editingModel, setEditingModel] = useState(null);
@@ -10,7 +11,9 @@ function ModelList() {
 
     useEffect(() => {
         loadModels();
+        loadBrands()
     }, []);
+
 
     const loadModels = async () => {
         try {
@@ -24,6 +27,22 @@ function ModelList() {
         }
     };
 
+    const loadBrands = async () => {
+        try {
+            const response = await brandService.getAll();
+            setBrands(response.data.data);
+        } catch (error) {
+            console.error('Markalar yüklenirken hata:', error);
+        }
+    };
+
+    const getBrandName = (brandId) => {
+        const brand = brands.find(b => b.id === brandId);
+        return brand ? brand.name : 'Bilinmeyen Marka';
+    };
+
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -32,7 +51,7 @@ function ModelList() {
             } else {
                 await modelService.create(formData);
             }
-            loadModels();
+            await loadModels();
             resetForm();
         } catch (error) {
             console.error('Kaydetme hatası:', error);
@@ -89,8 +108,22 @@ function ModelList() {
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                         required
-                        placeholder="Örn: A4, A5"
                     />
+                </div>
+                <div className="form-group">
+                    <label>Marka:</label>
+                    <select
+                        value={formData.brandId}
+                        onChange={(e) => setFormData({...formData, brandId: e.target.value})}
+                        required
+                    >
+                        <option value="">Marka Seçiniz</option>
+                        {brands.map(brand => (
+                            <option key={brand.id} value={brand.id}>
+                                {brand.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div className="form-actions">
                     <button type="submit" className="btn btn-success">
@@ -107,7 +140,7 @@ function ModelList() {
             <table className="data-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>Marka Adı</th>
                     <th>Model Adı</th>
                     <th>İşlemler</th>
                 </tr>
@@ -116,7 +149,7 @@ function ModelList() {
                 {models.length === 0 ? (<tr>
                     <td colSpan="6" className="no-data">Henüz model eklenmemiş</td>
                 </tr>) : (models.map(model => (<tr key={model.id}>
-                    <td>{model.id}</td>
+                    <td>{getBrandName(model.brandId)}</td>
                     <td>{model.name}</td>
                     <td>
                         <button

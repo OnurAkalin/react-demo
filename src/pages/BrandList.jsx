@@ -44,7 +44,7 @@ function BrandList() {
         if (window.confirm('Bu markayı silmek istediğinizden emin misiniz?')) {
             try {
                 await brandService.delete(id);
-                loadBrands();
+                await loadBrands();
             } catch (error) {
                 console.error('Silme hatası:', error);
             }
@@ -105,7 +105,6 @@ function BrandList() {
             <table className="data-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Marka Adı</th>
                     <th>İşlemler</th>
                 </tr>
@@ -114,7 +113,6 @@ function BrandList() {
                 {brands.length === 0 ? (<tr>
                     <td colSpan="4" className="no-data">Henüz marka eklenmemiş</td>
                 </tr>) : (brands.map(brand => (<tr key={brand.id}>
-                    <td>{brand.id}</td>
                     <td>{brand.name}</td>
                     <td>
                         <button
