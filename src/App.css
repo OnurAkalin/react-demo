@@ -431,12 +431,14 @@ body {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-xl);
     border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow-y: auto;
 }
 
 .data-table {
     width: 100%;
     border-collapse: collapse;
     background: var(--dark);
+    transform: translateZ(0);
 }
 
 .data-table thead {
@@ -468,7 +470,6 @@ body {
 
 .data-table tbody tr:hover {
     background: var(--gray);
-    transform: scale(1.01);
     box-shadow: var(--shadow-md);
 }
 
