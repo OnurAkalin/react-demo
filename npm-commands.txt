@@ -1,0 +1,8 @@
+ncu
+ncu -g
+
+npm-check
+npm-check -g
+
+npm outdated
+npm cache clean --force
